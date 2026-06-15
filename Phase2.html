@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phase 2 | CMS Advanced Manufacturing Facility</title>
+    <style>
+        :root {
+            --jsu-red: #CC0000;
+            --jsu-red-dark: #8E0000;
+            --jsu-dark: #222222;
+            --jsu-hover: #CC0000;
+            --bg-main: #0f1115;
+            --bg-panel: #171a21;
+            --text-main: #f5f5f5;
+            --text-muted: #b9beca;
+            --line-soft: rgba(255,255,255,0.12);
+            --shadow: 0 24px 80px rgba(0,0,0,0.38);
+            --plan-wall: #ffffff;
+            --plan-room: #f1f2f4;
+            --plan-hall: #fbfbfb;
+            --plan-text: #111111;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(204,0,0,0.22), transparent 32rem),
+                radial-gradient(circle at bottom right, rgba(255,255,255,0.07), transparent 30rem),
+                var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        a { color: inherit; text-decoration: none; }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(18px);
+            background: rgba(15,17,21,0.82);
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .nav {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 18px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 260px;
+        }
+
+        .brand-text strong {
+            display: block;
+            font-size: 0.98rem;
+            line-height: 1.1;
+        }
+
+        .brand-text span {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.78rem;
+            margin-top: 3px;
+        }
+
+        .phase-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .phase-link {
+            padding: 10px 14px;
+            border: 1px solid var(--line-soft);
+            border-radius: 999px;
+            color: var(--text-muted);
+            font-weight: 650;
+            font-size: 0.9rem;
+            transition: 0.22s ease;
+        }
+
+        .phase-link:hover,
+        .phase-link.active {
+            background: var(--jsu-red);
+            border-color: var(--jsu-red);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .hero {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 58px 28px 26px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            color: #ffffff;
+            background: rgba(204,0,0,0.14);
+            border: 1px solid rgba(204,0,0,0.42);
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+            width: 9px;
+            height: 9px;
+            background: var(--jsu-red);
+            border-radius: 50%;
+            box-shadow: 0 0 0 5px rgba(204,0,0,0.16);
+        }
+
+        h1 {
+            margin: 20px 0 16px;
+            font-size: clamp(2.4rem, 5.2vw, 5rem);
+            line-height: 0.96;
+            letter-spacing: -0.06em;
+            max-width: 980px;
+        }
+
+        .hero-copy {
+            color: var(--text-muted);
+            font-size: 1.08rem;
+            line-height: 1.65;
+            max-width: 830px;
+            margin: 0;
+        }
+
+        .overview-grid {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 10px 28px 26px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .stat-card {
+            border: 1px solid var(--line-soft);
+            border-radius: 20px;
+            background:
+                linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.025)),
+                var(--bg-panel);
+            padding: 20px;
+            min-height: 130px;
+        }
+
+        .stat-card span {
+            display: block;
+            color: var(--jsu-red);
+            font-size: 0.78rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card strong {
+            display: block;
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            margin: 0;
+            color: var(--text-muted);
+            line-height: 1.45;
+            font-size: 0.94rem;
+        }
+
+        .layout-shell {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 12px 28px 70px;
+        }
+
+        .layout-panel {
+            border: 1px solid var(--line-soft);
+            border-radius: 28px;
+            background:
+                linear-gradient(135deg, rgba(204,0,0,0.14), rgba(255,255,255,0.035)),
+                var(--bg-panel);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .layout-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 24px 26px;
+            border-bottom: 1px solid var(--line-soft);
+        }
+
+        .layout-header h2 {
+            margin: 0;
+            font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+            letter-spacing: -0.045em;
+        }
+
+        .layout-header p {
+            margin: 8px 0 0;
+            color: var(--text-muted);
+            line-height: 1.5;
+            max-width: 680px;
+        }
+
+        .badge {
+            white-space: nowrap;
+            padding: 9px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(204,0,0,0.5);
+            background: rgba(204,0,0,0.12);
+            color: white;
+            font-weight: 800;
+            font-size: 0.86rem;
+        }
+
+        .layout-container {
+            background: #ffffff;
+            margin: 22px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.18);
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .static-wall {
+            fill: #FFFFFF;
+            stroke: #222222;
+            stroke-width: 2;
+        }
+
+        .hallway-path {
+            fill: #FAFAFA;
+            stroke: #222222;
+            stroke-width: 2;
+        }
+
+        .clickable-region {
+            fill: #F0F0F0;
+            stroke: #222222;
+            stroke-width: 2;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .clickable-region:hover {
+            fill: var(--jsu-red);
+            fill-opacity: 0.15;
+            stroke: var(--jsu-red);
+            stroke-width: 3;
+        }
+
+        .region-label {
+            font-size: 11px;
+            font-weight: bold;
+            fill: #222222;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+
+        .static-label {
+            font-size: 9px;
+            fill: #666666;
+            pointer-events: none;
+        }
+
+        .pdf-wall {
+            fill: #fff;
+            stroke: #222;
+            stroke-width: 1.8;
+            vector-effect: non-scaling-stroke;
+        }
+
+        .pdf-hall {
+            fill: #fcfcfc;
+            stroke: #222;
+            stroke-width: 1.8;
+            vector-effect: non-scaling-stroke;
+        }
+
+        .door {
+            fill: none;
+            stroke: #222;
+            stroke-width: 1.8;
+            vector-effect: non-scaling-stroke;
+        }
+
+        .small-label {
+            font-size: 13px;
+            fill: #111;
+            pointer-events: none;
+        }
+
+        .tiny-label {
+            font-size: 8px;
+            fill: #111;
+            pointer-events: none;
+        }
+
+        .vertical-main {
+            font-size: 34px;
+            font-weight: 500;
+            fill: #111;
+            pointer-events: none;
+            letter-spacing: .5px;
+        }
+
+        .vertical-med {
+            font-size: 19px;
+            font-weight: 500;
+            fill: #111;
+            pointer-events: none;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.72);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: #151820;
+            color: var(--text-main);
+            padding: 26px;
+            border-radius: 22px;
+            border: 1px solid var(--line-soft);
+            border-top: 5px solid var(--jsu-red);
+            max-width: 760px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 28px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .close-btn:hover {
+            color: var(--jsu-red);
+        }
+
+        #modalTitle {
+            color: white !important;
+            margin-top: 0;
+            padding-right: 40px;
+        }
+
+        #modalDescription {
+            color: var(--text-muted) !important;
+            line-height: 1.55;
+        }
+
+        .modal-rendering {
+            width: 100%;
+            height: 380px;
+            object-fit: cover;
+            border-radius: 16px;
+            background-color: #232733;
+            margin-top: 15px;
+            border: 1px solid var(--line-soft);
+        }
+
+        .room-details {
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .room-details h3 {
+            color: var(--jsu-red);
+            margin-bottom: 5px;
+        }
+
+        .room-details li {
+            margin-bottom: 6px;
+            color: var(--text-muted);
+        }
+
+        .footer {
+            border-top: 1px solid var(--line-soft);
+            color: var(--text-muted);
+            padding: 24px 28px 34px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 900px) {
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .layout-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .badge {
+                white-space: normal;
+            }
+        }
+
+        @media (max-width: 680px) {
+            .nav {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .phase-nav {
+                justify-content: flex-start;
+            }
+
+            .hero {
+                padding-top: 42px;
+            }
+
+            .layout-container {
+                margin: 14px;
+                border-radius: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <nav class="nav" aria-label="Main navigation">
+            <a href="index.html" class="brand">
+                <div class="brand-text">
+                    <strong>Center for Manufacturing Support</strong>
+                    <span>Advanced Manufacturing Facility Proposal</span>
+                </div>
+            </a>
+
+            <div class="phase-nav">
+                <a href="phase1.html" class="phase-link">Phase 1</a>
+                <a href="phase2.html" class="phase-link active">Phase 2</a>
+                <a href="phase3.html" class="phase-link">Phase 3</a>
+                <a href="phase4.html" class="phase-link">Phase 4</a>
+            </div>
+        </nav>
+    </div>
+
+    <main>
+        <section class="hero">
+            <div class="eyebrow">Phase 2</div>
+            <h1>Interior Build-Out & Sectioned Facility</h1>
+            <p class="hero-copy">
+                Phase 2 transforms the usable open building from Phase 1 into a fully sectioned advanced manufacturing facility.
+                The plan organizes major training and production areas into dedicated spaces for robotics, machining, additive
+                manufacturing, metal additive, reverse engineering, scanning, classrooms, offices, and support functions.
+            </p>
+        </section>
+
+        <section class="overview-grid">
+            <div class="stat-card">
+                <span>Primary Goal</span>
+                <strong>Complete the interior layout</strong>
+                <p>Create dedicated zones that support training, applied projects, equipment demonstrations, and industry visits.</p>
+            </div>
+            <div class="stat-card">
+                <span>Facility Use</span>
+                <strong>Training + industry support</strong>
+                <p>Separate classrooms, lab areas, and production spaces so multiple activities can operate at the same time.</p>
+            </div>
+            <div class="stat-card">
+                <span>Interactive View</span>
+                <strong>Click any major room</strong>
+                <p>Each highlighted space opens details, planned infrastructure, and future rendering placeholders.</p>
+            </div>
+        </section>
+
+        <section class="layout-shell">
+            <div class="layout-panel">
+                <div class="layout-header">
+                    <div>
+                        <h2>Phase 2 Floor Plan</h2>
+                        <p>
+                            Click on any highlighted room or major space to view proposed use, infrastructure needs,
+                            and operational details for that area.
+                        </p>
+                    </div>
+                    <div class="badge">Interactive Layout</div>
+                </div>
+
+                <div class="layout-container">
+                    <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg" aria-label="Proposed CMS building layout matching PDF proposal">
+                <defs>
+                    <style>
+                        .pdf-wall{fill:#fff;stroke:#222222;stroke-width:1.8;vector-effect:non-scaling-stroke;}
+                        .pdf-hall{fill:#fcfcfc;stroke:#222222;stroke-width:1.8;vector-effect:non-scaling-stroke;}
+                        .door{fill:none;stroke:#222222;stroke-width:1.8;vector-effect:non-scaling-stroke;}
+                        .small-label{font-size:13px;fill:#111;pointer-events:none;}
+                        .tiny-label{font-size:8px;fill:#111;pointer-events:none;}
+                        .vertical-main{font-size:34px;font-weight:500;fill:#111;pointer-events:none;letter-spacing:.5px;}
+                        .vertical-med{font-size:19px;font-weight:500;fill:#111;pointer-events:none;}
+                    </style>
+                </defs>
+
+                <!-- Outer shell -->
+                <rect x="0" y="0" width="1000" height="1000" class="pdf-wall" />
+
+                <!-- Left office / lobby column and vertical corridor -->
+                <rect x="0" y="0" width="108" height="225" class="pdf-wall" />
+                <rect x="108" y="0" width="50" height="780" class="pdf-wall" />
+                <rect x="0" y="225" width="108" height="77" class="pdf-wall" />
+                <rect x="0" y="302" width="108" height="77" class="pdf-wall" />
+                <g onclick="openRoom('cad_scanning')">
+                    <rect x="0" y="379" width="108" height="174" class="clickable-region" />
+                    <text x="58" y="466" class="small-label" text-anchor="middle" transform="rotate(90 58 466)">CAD / SCANNING LAB</text>
+                </g>
+                <rect x="0" y="553" width="108" height="77" class="pdf-wall" />
+                <rect x="0" y="630" width="108" height="77" class="pdf-wall" />
+                <rect x="0" y="707" width="108" height="73" class="pdf-wall" />
+                <g onclick="openRoom('lobby')">
+                    <rect x="0" y="780" width="158" height="220" class="clickable-region" />
+                    <text x="86" y="900" class="vertical-med" text-anchor="middle" transform="rotate(90 86 900)">LOBBY</text>
+                </g>
+
+
+                <!-- Main rooms left and center -->
+                <g onclick="openRoom('robotics')">
+                    <path d="M158 0 H500 V335 H440 V480 H158 Z" class="clickable-region" />
+                    <text x="356" y="240" class="vertical-main" text-anchor="middle" transform="rotate(90 356 240)">ROBOTICS</text>
+                </g>
+
+                <g onclick="openRoom('additive_lab')">
+                    <path d="M158 520 H440 V655 H500 V860 H158 Z" class="clickable-region" />
+                    <text x="353" y="690" class="vertical-main" text-anchor="middle" transform="rotate(90 353 690)">ADDITIVE LAB</text>
+                </g>
+
+                <g onclick="openRoom('post_processing')">
+                    <rect x="158" y="860" width="222" height="140" class="clickable-region" />
+                    <text x="294" y="935" class="small-label" text-anchor="middle" transform="rotate(90 294 935)">POST</text>
+                    <text x="320" y="935" class="small-label" text-anchor="middle" transform="rotate(90 320 935)">PROCESSING</text>
+                </g>
+                <g onclick="openRoom('sls')">
+                    <rect x="380" y="860" width="120" height="140" class="clickable-region" />
+                    <text x="440" y="930" class="vertical-med" text-anchor="middle" transform="rotate(90 440 930)">SLS</text>
+                </g>
+
+                <!-- Central restroom notch area -->
+                <rect x="440" y="335" width="60" height="95" class="pdf-wall" />
+                <rect x="440" y="430" width="60" height="50" class="pdf-wall" />
+                <text x="470" y="455" class="tiny-label" text-anchor="middle" transform="rotate(90 470 455)">Restroom</text>
+                <rect x="440" y="520" width="60" height="50" class="pdf-wall" />
+                <text x="470" y="545" class="tiny-label" text-anchor="middle" transform="rotate(90 470 545)">Restroom</text>
+                <rect x="440" y="570" width="60" height="90" class="pdf-wall" />
+
+                <!-- Top/right major spaces -->
+                <g onclick="openRoom('machining')">
+                    <path d="M500 0 H1000 V520 H705 V480 H500 Z" class="clickable-region" />
+                    <text x="820" y="250" class="vertical-main" text-anchor="middle" transform="rotate(90 820 250)">MACHINING AREA</text>
+                </g>
+
+                <g onclick="openRoom('classroom_1')">
+                    <rect x="500" y="170" width="190" height="310" class="clickable-region" />
+                    <text x="615" y="330" class="vertical-main" text-anchor="middle" transform="rotate(90 595 330)">Classroom 1</text>
+                </g>
+                <rect x="500" y="170" width="95" height="62" class="pdf-wall" />
+                <text x="548" y="204" class="tiny-label" text-anchor="middle" transform="rotate(90 548 204)">CLASSROOM</text>
+                <text x="560" y="204" class="tiny-label" text-anchor="middle" transform="rotate(90 560 204)">OFFICE</text>
+                <rect x="595" y="170" width="95" height="62" class="pdf-wall" />
+                <text x="643" y="205" class="small-label" text-anchor="middle" transform="rotate(90 643 205)">OFFICE</text>
+
+                <!-- Hallways -->
+                <rect x="158" y="480" width="842" height="40" class="pdf-hall" />
+
+                <!-- Lower center/right spaces -->
+                <g onclick="openRoom('classroom_2')">
+                    <rect x="500" y="520" width="190" height="310" class="clickable-region" />
+                    <text x="565" y="680" class="vertical-main" text-anchor="middle" transform="rotate(90 595 680)">Classroom 2</text>
+                </g>
+                <rect x="500" y="770" width="95" height="60" class="pdf-wall" />
+                <text x="548" y="803" class="tiny-label" text-anchor="middle" transform="rotate(90 548 803)">CLASSROOM</text>
+                <text x="560" y="803" class="tiny-label" text-anchor="middle" transform="rotate(90 560 803)">OFFICE</text>
+                <rect x="595" y="770" width="95" height="60" class="pdf-wall" />
+                <text x="643" y="803" class="small-label" text-anchor="middle" transform="rotate(90 643 803)">Storage</text>
+
+                <g onclick="openRoom('quality_lab')">
+                    <rect x="690" y="520" width="190" height="310" class="clickable-region" />
+                    <text x="785" y="674" class="vertical-med" text-anchor="middle" transform="rotate(90 785 674)">Quality / Reverse Engineering Lab</text>
+                </g>
+
+
+                <g onclick="openRoom('metal_additive')">
+                    <path d="M880 520 H1000 V1000 H500 V830 H880 Z" class="clickable-region" />
+                    <text x="940" y="720" class="vertical-main" text-anchor="middle" transform="rotate(90 940 720)">METAL ADDITIVE LAB</text>
+                </g>
+
+                <!-- Labels for non-clickable left rooms -->
+                <text x="55" y="115" class="small-label" text-anchor="middle" transform="rotate(90 55 115)">OFFICE WITH</text>
+                <text x="75" y="115" class="small-label" text-anchor="middle" transform="rotate(90 75 115)">CONFERENCE</text>
+                <text x="55" y="264" class="small-label" text-anchor="middle" transform="rotate(90 55 264)">OFFICE</text>
+                <text x="55" y="341" class="small-label" text-anchor="middle" transform="rotate(90 55 341)">OFFICE</text>
+                <text x="55" y="592" class="small-label" text-anchor="middle" transform="rotate(90 55 592)">OFFICE</text>
+                <text x="55" y="669" class="small-label" text-anchor="middle" transform="rotate(90 55 669)">OFFICE</text>
+                <text x="55" y="744" class="small-label" text-anchor="middle" transform="rotate(90 55 744)">OFFICE</text>
+
+
+            </svg>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="roomModal" onclick="closeRoom()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeRoom()">&times;</button>
+            <h2 id="modalTitle" style="color: var(--jsu-red); margin-top: 0;">Room Title</h2>
+            <p id="modalDescription" style="color: var(--jsu-slate);">Room description details go here.</p>
+            
+            <img id="modalImage" src="renderings/cad_scanning.png" alt="3D Facility Rendering" class="modal-rendering">
+            
+            <div class="room-details">
+                <h3>Target Infrastructure & Features:</h3>
+                <ul id="modalFeatures">
+                    </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const roomData = {
+            robotics: {
+                title: "Robotics Engineering Center",
+                desc: "Dedicated robotics and automation area for industrial robot training, workcell demonstrations, PLC integration, safety systems, and applied automation projects.",
+                image: "renderings/robotics.png",
+                features: ["Industrial multi-axis articulated arms", "Autonomous Mobile Robot (AMR) lanes", "Integrated automation safety fencing", "PLC programming environments"]
+            },
+            additive_lab: {
+                title: "Polymer Additive Manufacturing Lab",
+                desc: "Primary polymer additive manufacturing lab for FDM, composite printing, resin workflows, training activities, and industry prototyping support.",
+                image: "renderings/additive_lab.png",
+                features: ["High-temp performance material arrays", "Dedicated clean handling benches", "Serrated air-exchange conditioning systems"]
+            },
+            post_processing: {
+                title: "Post-Processing Workspace",
+                desc: "Component finishing area supporting structural support extraction, blast media refining, and furnace-driven stress relief thermal steps.",
+                image: "renderings/post_processing.png",
+                features: ["Media blasting cabinets", "Support clearing automated tools", "Thermal treatment stress relief ovens", "Wet dust collection safety hoods"]
+            },
+            sls: {
+                title: "Selective Laser Sintering (SLS) Lab",
+                desc: "Specialized environment optimized for structural nylon powder printing operations.",
+                image: "renderings/sls.png",
+                features: ["Powder-bed fusion machinery", "Atmosphere monitored powder reclamation hubs", "Sifting safety containment structures"]
+            },
+            cad_scanning: {
+                title: "CAD Modeling & 3D Scanning Lab",
+                desc: "Frontend technology hub containing structured blue-light tracking sensors and parametric engineering CAD systems.",
+                image: "renderings/cad_scanning.png",
+                features: ["Metrology grade blue-light scanning setups", "CAD/CAM dedicated processing boxes", "High-capacity visual presentation displays"]
+            },
+            lobby: {
+                title: "Main Entrance Lobby & Gallery",
+                desc: "Public-facing showcase lobby displaying historic CMS component fabrication milestones and guest welcome terminals.",
+                image: "renderings/lobby.png",
+                features: ["Interactive project visualization monitors", "Secure sign-in badging desks", "Showcase display glass panels"]
+            },
+            machining: {
+                title: "Advanced Machining Area",
+                desc: "Advanced machining area for CNC milling, turning, fixture development, student training, and industry machining support.",
+                image: "renderings/machining.png",
+                features: ["Multi-axis CNC mills and machining hubs", "High precision turning centers", "Heavy crane material lifters", "Central chip separation and coolant channels"]
+            },
+            classroom_1: {
+                title: "Technical Instruction Classroom 1",
+                desc: "Dual purpose space combining structured standard lecture desks with modern local terminal arrays.",
+                image: "renderings/classroom_1.png",
+                features: ["Smart display visual tracking screens", "Integrated instructor audio zones", "Flexible modular tables"]
+            },
+            classroom_2: {
+                title: "Technical Instruction Classroom 2",
+                desc: "Additional multi-student advanced workforce lecture space with rapid structural layout configurations.",
+                image: "renderings/classroom_2.png",
+                features: ["Dual projection display nodes", "High-efficiency acoustic structural dampening", "Local diagnostic tooling kits"]
+            },
+            quality_lab: {
+                title: "Quality Control & Reverse Engineering Lab",
+                desc: "Quality and reverse engineering lab for scanning, inspection, metrology, dimensional validation, and customer part analysis.",
+                image: "renderings/quality_lab.png",
+                features: ["Coordinate Measuring Machines (CMM)", "Laser based precision inspection arms", "GD&T digital validation tracking systems"]
+            },
+            metal_additive: {
+                title: "Industrial Metal Additive Lab",
+                desc: "Controlled metal additive manufacturing area for laser powder-bed fusion systems, inert gas infrastructure, powder handling, and related safety controls.",
+                image: "renderings/metal_additive.png",
+                features: ["Industrial Laser Powder Bed Fusion (PBF) systems", "Inert gas atmosphere delivery networks", "Explosion proof safety dust extractions", "Rigid cleanroom standard safety gear entries"]
+            }
+        };
+
+        function openRoom(roomId) {
+            const data = roomData[roomId];
+            if (!data) return;
+
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalDescription').innerText = data.desc;
+            document.getElementById('modalImage').src = data.image;
+            
+            const featuresList = document.getElementById('modalFeatures');
+            featuresList.innerHTML = ""; 
+            data.features.forEach(feature => {
+                const li = document.createElement('li');
+                li.innerText = feature;
+                featuresList.appendChild(li);
+            });
+
+            document.getElementById('roomModal').classList.add('active');
+        }
+
+        function closeRoom() {
+            document.getElementById('roomModal').classList.remove('active');
+        }
+    </script>
+
+    <footer class="footer">
+        Jacksonville State University · Center for Manufacturing Support · Phase 2 Facility Build-Out
+    </footer>
+</body>
+</html>
